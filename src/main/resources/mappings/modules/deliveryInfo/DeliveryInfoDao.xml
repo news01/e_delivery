@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.deliveryInfo.dao.DeliveryInfoDao">
+
+    <sql id="deliveryInfoColumns">
+		a.dev_id AS "devId",
+		a.case_id AS "caseId",
+		a.dev_num AS "devNum",
+		a.dev_time AS "devTime",
+		a.dev_photo1 AS "devPhoto1",
+		a.dev_photo2 AS "devPhoto2",
+		a.dev_photo3 AS "devPhoto3",
+		a.dev_video1 AS "devVideo1",
+		a.dev_video2 AS "devVideo2",
+		a.dev_video3 AS "devVideo3",
+		a.prove_staff AS "proveStaff",
+		a.dev_status AS "devStatus",
+		a.dev_gird AS "devGird",
+		a.com_sign AS "comSign",
+		a.remarks AS "remarks",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag",
+		a.attribute1 AS "attribute1",
+		a.attribute2 AS "attribute2",
+		a.attribute3 AS "attribute3",
+		a.attribute4 AS "attribute4",
+		a.attribute5 AS "attribute5",
+		a.attribute6 AS "attribute6",
+		a.attribute7 AS "attribute7"
+	</sql>
+
+    <sql id="_base_bo_cause">
+        <where>
+            <if test="devId != null">
+                and dev_id = #{devId,jdbcType=VARCHAR}
+            </if>
+            <if test="caseId != null">
+                and case_id = #{caseId,jdbcType=VARCHAR}
+            </if>
+            <if test="devNum != null">
+                and dev_num = #{devNum,jdbcType=INTEGER}
+            </if>
+        </where>
+    </sql>
+
+
+    <sql id="deliveryInfoJoins">
+    </sql>
+
+    <select id="get" resultType="DeliveryInfo">
+        SELECT
+        <include refid="deliveryInfoColumns"/>
+        FROM delivery_info a
+        <include refid="deliveryInfoJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <!--根据caseID获取案件信息-->
+    <select id="getDelInfoByCaseId" resultType="DeliveryInfo">
+        SELECT
+        <include refid="deliveryInfoColumns"/>
+        FROM delivery_info a
+        <include refid="_base_bo_cause"/>
+
+        ORDER BY dev_time desc;
+    </select>
+
+    <select id="findList" resultType="DeliveryInfo">
+        SELECT
+        <include refid="deliveryInfoColumns"/>
+        FROM delivery_info a
+        <include refid="deliveryInfoJoins"/>
+        <where>
+
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findAllList" resultType="DeliveryInfo">
+        SELECT
+        <include refid="deliveryInfoColumns"/>
+        FROM delivery_info a
+        <include refid="deliveryInfoJoins"/>
+        <where>
+
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="insert">
+		INSERT INTO delivery_info(
+			dev_id,
+			case_id,
+			dev_num,
+			dev_time,
+			dev_photo1,
+			dev_photo2,
+			dev_photo3,
+			dev_video1,
+			dev_video2,
+			dev_video3,
+			prove_staff,
+			dev_status,
+		    dev_gird,
+		    com_sign,
+			remarks,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			attribute1,
+			attribute2,
+			attribute3,
+			attribute4,
+			attribute5,
+			attribute6,
+			attribute7
+		) VALUES (
+			#{devId},
+			#{caseId},
+			#{devNum},
+			#{devTime},
+			#{devPhoto1},
+			#{devPhoto2},
+			#{devPhoto3},
+			#{devVideo1},
+			#{devVideo2},
+			#{devVideo3},
+			#{proveStaff},
+			#{remarks},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag},
+			#{attribute1},
+			#{attribute2},
+			#{attribute3},
+			#{attribute4},
+			#{attribute5},
+			#{attribute6},
+			#{attribute7}
+		)
+	</insert>
+
+    <update id="update">
+		UPDATE delivery_info SET
+			dev_id = #{devId},
+			case_id = #{caseId},
+			dev_num = #{devNum},
+			dev_time = #{devTime},
+			dev_photo1 = #{devPhoto1},
+			dev_photo2 = #{devPhoto2},
+			dev_photo3 = #{devPhoto3},
+			dev_video1 = #{devVideo1},
+			dev_video2 = #{devVideo2},
+			dev_video3 = #{devVideo3},
+			prove_staff = #{proveStaff},
+
+			dev_status = #{devStatus},
+			dev_gird = #{devGird},
+			com_sign = #{comSign},
+
+			remarks = #{remarks},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			attribute1 = #{attribute1},
+			attribute2 = #{attribute2},
+			attribute3 = #{attribute3},
+			attribute4 = #{attribute4},
+			attribute5 = #{attribute5},
+			attribute6 = #{attribute6},
+			attribute7 = #{attribute7}
+		WHERE id = #{id}
+	</update>
+
+    <update id="delete">
+		DELETE FROM delivery_info
+		WHERE id = #{id}
+	</update>
+
+    <insert id="insertDeliveryInfo" parameterType="DeliveryInfo">
+        insert into delivery_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="caseId != null">
+                case_id,
+            </if>
+            <if test="devNum != null">
+                dev_num,
+            </if>
+            <if test="devTime != null">
+                dev_time,
+            </if>
+            <if test="devPhoto1 != null">
+                dev_photo1,
+            </if>
+            <if test="devPhoto2 != null">
+                dev_photo2,
+            </if>
+            <if test="devPhoto3 != null">
+                dev_photo3,
+            </if>
+            <if test="devVideo1 != null">
+                dev_video1,
+            </if>
+            <if test="devVideo2 != null">
+                dev_video2,
+            </if>
+            <if test="devVideo3 != null">
+                dev_video3,
+            </if>
+            <if test="proveStaff != null">
+                prove_staff,
+            </if>
+
+            <if test="devStatus != null">
+                dev_status,
+            </if>
+            <if test="devGird != null">
+                dev_gird,
+            </if>
+            <if test="comSign != null">
+                com_sign,
+            </if>
+
+            <if test="remarks != null">
+                remarks,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="attribute1 != null">
+                attribute1,
+            </if>
+            <if test="attribute2 != null">
+                attribute2,
+            </if>
+            <if test="attribute3 != null">
+                attribute3,
+            </if>
+            <if test="attribute4 != null">
+                attribute4,
+            </if>
+
+            <if test="attribute5 != null">
+                attribute5,
+            </if>
+            <if test="attribute6 != null">
+                attribute6,
+            </if>
+            <if test="attribute7 != null">
+                attribute7
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+
+            <if test="caseId != null">
+                #{caseId,jdbcType=VARCHAR},
+            </if>
+            <if test="devNum != null">
+                #{devNum,jdbcType=TINYINT},
+            </if>
+            <if test="devTime != null">
+                #{devTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="devPhoto1 != null">
+                #{devPhoto1,jdbcType=BLOB},
+            </if>
+            <if test="devPhoto2 != null">
+                #{devPhoto2,jdbcType=BLOB},
+            </if>
+            <if test="devPhoto3 != null">
+                #{devPhoto3,jdbcType=BLOB},
+            </if>
+            <if test="devVideo1 != null">
+                #{devVideo1,jdbcType=BLOB},
+            </if>
+            <if test="devVideo2 != null">
+                #{devVideo2,jdbcType=BLOB},
+            </if>
+            <if test="devVideo3 != null">
+                #{devVideo3,jdbcType=BLOB},
+            </if>
+            <if test="proveStaff != null">
+                #{proveStaff,jdbcType=VARCHAR},
+            </if>
+
+            <if test="devStatus != null">
+                #{devStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="devGird != null">
+                #{devGird,jdbcType=VARCHAR},
+            </if>
+            <if test="comSign != null">
+                #{comSign,jdbcType=VARCHAR},
+            </if>
+
+            <if test="remarks != null">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=CHAR},
+            </if>
+            <if test="attribute1 != null">
+                #{attribute1,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute2 != null">
+                #{attribute2,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute3 != null">
+                #{attribute3,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute4 != null">
+                #{attribute4,jdbcType=VARCHAR},
+            </if>
+
+            <if test="attribute5 != null">
+                #{attribute5,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute6 != null">
+                #{attribute6,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute7 != null">
+                #{attribute6,jdbcType=VARCHAR}
+            </if>
+
+        </trim>
+    </insert>
+
+
+    <update id="updateDeliveryInfo" parameterType="DeliveryInfo">
+        update delivery_info
+        <set>
+
+            <if test="caseId != null">
+                case_id = #{caseId,jdbcType=VARCHAR},
+            </if>
+            <if test="devNum != null">
+                dev_num = #{devNum,jdbcType=TINYINT},
+            </if>
+            <if test="devTime != null">
+                dev_time = #{devTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="devPhoto1 != null">
+                dev_photo1 = #{devPhoto1,jdbcType=BLOB},
+            </if>
+            <if test="devPhoto2 != null">
+                dev_photo2 = #{devPhoto2,jdbcType=BLOB},
+            </if>
+            <if test="devPhoto3 != null">
+                dev_photo3 = #{devPhoto3,jdbcType=BLOB},
+            </if>
+            <if test="devVideo1 != null">
+                dev_video1 = #{devVideo1,jdbcType=BLOB},
+            </if>
+            <if test="devVideo2 != null">
+                dev_video2 = #{devVideo2,jdbcType=BLOB},
+            </if>
+            <if test="devVideo3 != null">
+                dev_video3 = #{devVideo3,jdbcType=BLOB},
+            </if>
+            <if test="proveStaff != null">
+                prove_staff = #{proveStaff,jdbcType=VARCHAR},
+            </if>
+
+            <if test="devStatus != null">
+                dev_status = #{devStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="devGird != null">
+                dev_gird = #{devGird,jdbcType=VARCHAR},
+            </if>
+            <if test="comSign != null">
+                com_sign = #{comSign,jdbcType=VARCHAR},
+            </if>
+
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=CHAR},
+            </if>
+            <if test="attribute1 != null">
+                attribute1 = #{attribute1,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute2 != null">
+                attribute2 = #{attribute2,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute3 != null">
+                attribute3 = #{attribute3,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute4 != null">
+                attribute4 = #{attribute4,jdbcType=VARCHAR},
+            </if>
+
+            <if test="attribute5 != null">
+                attribute5 = #{attribute5,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute6 != null">
+                attribute6 = #{attribute6,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute7 != null">
+                attribute7 = #{attribute7,jdbcType=VARCHAR}
+            </if>
+        </set>
+        <include refid="_base_bo_cause"/>
+    </update>
+
+
+    <select id="getTheLastDev" resultType="DeliveryInfo">
+        SELECT
+        <include refid="deliveryInfoColumns"/>
+        FROM delivery_info a
+        WHERE a.case_id = #{caseId,jdbcType=VARCHAR}
+        ORDER BY a.dev_time desc LIMIT 0,1
+    </select>
+
+    <!--避免重复提交-->
+    <update id="updateDevInfo" parameterType="DeliveryInfo">
+        update delivery_info
+        <set>
+            <if test="caseId != null">
+                case_id = #{caseId,jdbcType=VARCHAR},
+            </if>
+            <if test="devNum != null">
+                dev_num = #{devNum,jdbcType=TINYINT},
+            </if>
+            <if test="devTime != null">
+                dev_time = #{devTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="devPhoto1 != null">
+                dev_photo1 = #{devPhoto1,jdbcType=BLOB},
+            </if>
+            <if test="devPhoto2 != null">
+                dev_photo2 = #{devPhoto2,jdbcType=BLOB},
+            </if>
+            <if test="devPhoto3 != null">
+                dev_photo3 = #{devPhoto3,jdbcType=BLOB},
+            </if>
+            <if test="devVideo1 != null">
+                dev_video1 = #{devVideo1,jdbcType=BLOB},
+            </if>
+            <if test="devVideo2 != null">
+                dev_video2 = #{devVideo2,jdbcType=BLOB},
+            </if>
+            <if test="devVideo3 != null">
+                dev_video3 = #{devVideo3,jdbcType=BLOB},
+            </if>
+            <if test="proveStaff != null">
+                prove_staff = #{proveStaff,jdbcType=VARCHAR},
+            </if>
+
+            <if test="devStatus != null">
+                dev_status = #{devStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="devGird != null">
+                dev_gird = #{devGird,jdbcType=VARCHAR},
+            </if>
+            <if test="comSign != null">
+                com_sign = #{comSign,jdbcType=VARCHAR},
+            </if>
+
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=CHAR},
+            </if>
+            <if test="attribute1 != null">
+                attribute1 = #{attribute1,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute2 != null">
+                attribute2 = #{attribute2,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute3 != null">
+                attribute3 = #{attribute3,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute4 != null">
+                attribute4 = #{attribute4,jdbcType=VARCHAR},
+            </if>
+
+            <if test="attribute5 != null">
+                attribute5 = #{attribute5,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute6 != null">
+                attribute6 = #{attribute6,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute7 != null">
+                attribute7 = #{attribute7,jdbcType=VARCHAR}
+            </if>
+        </set>
+        <include refid="_base_bo_cause"/>
+        <if test="devStatus != null">
+            and dev_status = #{devStatus,jdbcType=VARCHAR}
+        </if>
+    </update>
+
+    <!--获取deliveryInfo-->
+    <select id="getDevInfo" resultType="DeliveryInfo">
+        SELECT
+        <include refid="deliveryInfoColumns"/>
+        FROM delivery_info a
+        <include refid="_base_bo_cause"/>
+        <if test="devStatus != null">
+            and dev_status = #{devStatus,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+
+</mapper>

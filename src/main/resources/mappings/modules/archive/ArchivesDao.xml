@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.archive.dao.ArchivesDao">
+    
+	<sql id="archivesColumns">
+		a.id AS "id",
+		a.case_num AS "caseNum",
+		a.case_case AS "caseCase",
+		a.pla AS "pla",
+		a.defen AS "defen",
+		a.book_num AS "bookNum",
+		a.all_books AS "allBooks",
+		a.page_num AS "pageNum",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_time AS "updateTime",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.ajid AS "ajid",
+		a.stid AS "stid"
+	</sql>
+	
+	<sql id="archivesJoins">
+	</sql>
+    
+	<select id="get" resultType="Archives">
+		SELECT 
+			<include refid="archivesColumns"/>
+		FROM archives a
+		<include refid="archivesJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Archives">
+		SELECT 
+			<include refid="archivesColumns"/>
+		FROM archives a
+		<include refid="archivesJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	<select id="findMoHu" resultType="Archives">
+		SELECT * FROM archives WHERE case_num LIKE CONCAT(CONCAT('%',#{caseNum}),'%') 
+	</select>
+	<select id="findAllList" resultType="Archives">
+		SELECT 
+			<include refid="archivesColumns"/>
+		FROM archives a
+		<include refid="archivesJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+		
+	</select>
+	<select id="findByCaseNum" resultType="Archives">
+		SELECT * FROM archives WHERE case_num = #{caseNum}
+	</select>
+	<insert id="insert">
+		INSERT INTO archives(
+			id,
+			case_num,
+			case_case,
+			pla,
+			defen,
+			book_num,
+			all_books,
+			page_num,
+			create_by,
+			create_date,
+			update_by,
+			update_time,
+			remarks,
+			del_flag,
+			ajid,
+			stid
+		) VALUES (
+			#{id},
+			#{caseNum},
+			#{caseCase},
+			#{pla},
+			#{defen},
+			#{bookNum},
+			#{allBooks},
+			#{pageNum},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateTime},
+			#{remarks},
+			#{delFlag},
+			#{ajid},
+			#{stid}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE archives SET 	
+			case_num = #{caseNum},
+			case_case = #{caseCase},
+			pla = #{pla},
+			defen = #{defen},
+			book_num = #{bookNum},
+			all_books = #{allBooks},
+			page_num = #{pageNum},
+			update_by = #{updateBy.id},
+			update_time = #{updateTime},
+			remarks = #{remarks},
+			ajid = #{ajid},
+			stid = #{stid}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE archives SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	<delete id="deleteArchives">
+		DELETE FROM archives WHERE id = #{id}
+	</delete>
+</mapper>

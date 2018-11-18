@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.dayset.dao.MaxHaveDaysDao">
+    
+	<sql id="maxHaveDaysColumns">
+		a.id AS "id",
+		a.office_id AS "office.id",
+		a.days AS "days",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		o2.name AS "office.name"
+	</sql>
+	
+	<sql id="maxHaveDaysJoins">
+		LEFT JOIN sys_office o2 ON o2.id = a.office_id
+	</sql>
+    <select id="findAllDays">
+    	SELECT 
+			<include refid="maxHaveDaysColumns"/>
+		FROM max_have_days a
+		<include refid="maxHaveDaysJoins"/>
+    </select>
+	<select id="get" resultType="MaxHaveDays">
+		SELECT 
+			<include refid="maxHaveDaysColumns"/>
+		FROM max_have_days a
+		<include refid="maxHaveDaysJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MaxHaveDays">
+		SELECT 
+			<include refid="maxHaveDaysColumns"/>
+		FROM max_have_days a
+		<include refid="maxHaveDaysJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	<select id="findByOfficeId" resultType="MaxHaveDays">
+		SELECT
+			<include refid="maxHaveDaysColumns"/>
+		FROM max_have_days a
+			<include refid="maxHaveDaysJoins"/>
+		WHERE a.office_id = #{officeId}
+	</select>
+	<select id="findAllList" resultType="MaxHaveDays">
+		SELECT 
+			<include refid="maxHaveDaysColumns"/>
+		FROM max_have_days a
+		<include refid="maxHaveDaysJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO max_have_days(
+			id,
+			office_id,
+			days,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{office.id},
+			#{days},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE max_have_days SET 	
+			office_id = #{office.id},
+			days = #{days},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE max_have_days SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

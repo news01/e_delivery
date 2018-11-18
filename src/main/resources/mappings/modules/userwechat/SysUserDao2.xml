@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.userwechat.dao.SysUserDao2">
+
+	<select id="getSysUserbyId"  parameterType="java.lang.String" resultType="SysUser">
+		SELECT
+		a.id AS "id",
+		a.office_id AS "office.id",
+		a.login_name AS "loginName",
+		a. PASSWORD AS "password",
+		a.NAME AS "name",
+		a.phone AS "phone",
+		a.mobile AS "mobile",
+		a.user_type AS "userType",
+		a.create_by AS "createBy.id",
+		o3. NAME AS "office.name"
+		FROM sys_user a
+		inner JOIN sys_office o3 ON o3.id = a.office_id
+		WHERE a.id = #{id}
+	</select>
+
+	<sql id="sysUserColumns">
+		a.id AS "id",
+		a.company_id AS "companyId",
+		a.office_id AS "office.id",
+		a.login_name AS "loginName",
+		a.password AS "password",
+		a.name AS "name",
+		a.email AS "email",
+		a.phone AS "phone",
+		a.mobile AS "mobile",
+		a.user_type AS "userType",
+/*		a.login_date AS "loginDate",
+*/		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag",
+		o3.name AS "office.name"
+	</sql>
+
+	<select id="getSysUserByCommunityId" resultType="SysUser">
+		select
+		<include refid="sysUserColumns"/>
+		from sys_user a
+		JOIN sys_office o3 ON o3.id = a.office_id
+		and a.office_id = #{office.id,jdbcType=VARCHAR}
+		and a.user_type = #{userType,jdbcType=VARCHAR}
+		and a.del_flag = 0
+	</select>
+
+</mapper>

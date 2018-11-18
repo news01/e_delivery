@@ -1,0 +1,675 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.caseinfo.dao.CaseInfoDao">
+
+    <sql id="caseInfoColumns">
+		a.id AS "id",
+		a.ca_id AS "caId",
+		a.case_num AS "caseNum",
+		a.first_mail AS "firstMail",
+		a.return_mail AS "returnMail",
+		a.deliver AS "deliver",
+		a.deliver_address AS "deliverAddress",
+		a.deliver_sign_time AS "deliverSignTime",
+		a.judge_assistant AS "judgeAssistant",
+		a.judge_assistant_phone AS "judgeAssistantPhone",
+		a.communtity_sign_time AS "communtitySignTime",
+		a.communtity_sign_id AS "communtitySignId",
+		a.communtity_id AS "communtityId",
+		a.turns_out AS "turnsOut",
+		a.turns_out_people AS "turnsOutPeople",
+		a.grid_sign_time AS "gridSignTime",
+		a.grid_id AS "gridId",
+		a.case_status AS "caseStatus",
+		a.ems_id AS "emsId",
+		a.ems_phone AS "emsPhone",
+		a.ems_sign_time AS "emsSignTime",
+		a.court_id AS "courtId",
+		a.court_sign_time AS "courtSignTime",
+		a.remarks AS "remarks",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag",
+		a.attribute1 AS "attribute1",
+		a.attribute2 AS "attribute2",
+		a.attribute3 AS "attribute3",
+		a.attribute4 AS "attribute4"
+	</sql>
+    <sql id="caseInfoColumns2">
+		a.id AS "id",
+		a.ca_id AS "caId",
+		a.case_num AS "caseNum",
+		a.deliver_sign_time AS "deliverSignTime",
+		a.judge_assistant AS "judgeAssistant",
+		a.judge_assistant_phone AS "judgeAssistantPhone",
+		a.communtity_sign_time AS "communtitySignTime",
+		a.communtity_sign_id AS "communtitySignId",
+		a.communtity_id AS "communtityId",
+		a.grid_sign_time AS "gridSignTime",
+		a.grid_id AS "gridId",
+		a.case_status AS "caseStatus",
+		a.ems_id AS "emsId",
+		a.ems_phone AS "emsPhone",
+		a.ems_sign_time AS "emsSignTime",
+		a.court_id AS "courtId",
+		a.court_sign_time AS "courtSignTime",
+		a.attribute1 AS "attribute1",
+		a.attribute2 AS "attribute2",
+		a.attribute3 AS "attribute3",
+		a.attribute4 AS "attribute4"
+	</sql>
+
+
+    <sql id="caseInfoJoins">
+    </sql>
+
+    <sql id="_base_bo_cause">
+        <where>
+            1=1
+            <if test="id != null">
+                and id = #{id,jdbcType=BIGINT}
+            </if>
+            <if test="caId != null">
+                and ca_id = #{caId,jdbcType=BIGINT}
+            </if>
+
+
+            <choose>
+                <!--<when test="attribute4 == 4">-->
+                <!--<if test="caseNum != null">-->
+                <!--and case_num LIKE  "%"#{caseNum,jdbcType=VARCHAR}"%"-->
+                <!--</if>-->
+                <!--</when>-->
+
+                <when test="attribute4 == 4">
+                    <if test="caseNum != null">
+                        and case_num LIKE "%"#{caseNum,jdbcType=VARCHAR}"%"
+                    </if>
+
+                    <if test="deliverSignTime == null">
+                        and deliver_sign_time is null
+                    </if>
+                    <if test="deliverSignTime != null">
+                        and deliver_sign_time is not null
+                    </if>
+
+                </when>
+
+                <when test="attribute4 == null">
+                    <if test="caseNum != null">
+                        and case_num = #{caseNum,jdbcType=VARCHAR}
+                    </if>
+
+                </when>
+
+            </choose>
+            <!--<if test="attribute4 == 4">-->
+            <!--<if test="caseNum != null">-->
+            <!--and case_num LIKE '%#{caseNum,jdbcType=VARCHAR}%'-->
+            <!--</if>-->
+            <!--</if>-->
+            <!--<if test="caseNum != null">-->
+            <!--and case_num = #{caseNum,jdbcType=VARCHAR}-->
+            <!--</if>-->
+
+
+            <if test="firstMail != null">
+                and first_mail = #{firstMail,jdbcType=VARCHAR}
+            </if>
+            <if test="returnMail != null">
+                and return_mail = #{returnMail,jdbcType=VARCHAR}
+            </if>
+            <if test="deliver != null">
+                and deliver = #{deliver,jdbcType=VARCHAR}
+            </if>
+
+            <if test="deliverAddress != null">
+                and deliver_address = #{deliverAddress,jdbcType=VARCHAR}
+            </if>
+
+
+            <if test="attribute4 == 1">
+                <if test="gridSignTime == null">
+                    and grid_sign_time is null
+                </if>
+                <if test="gridSignTime != null">
+                    and grid_sign_time is not null
+                </if>
+            </if>
+
+            <if test="attribute4 == 2">
+                <if test="emsSignTime == null">
+                    and ems_sign_time is null
+                </if>
+                <if test="emsSignTime != null">
+                    and ems_sign_time is not null
+                </if>
+                <if test="caseNum != null">
+                    and case_num LIKE "%"#{caseNum,jdbcType=VARCHAR}"%"
+                </if>
+            </if>
+
+            <if test="attribute4 == 3">
+                <if test="deliverSignTime == null">
+                    and deliver_sign_time is null
+                </if>
+                <if test="deliverSignTime != null">
+                    and deliver_sign_time is not null
+                </if>
+            </if>
+
+            <!-- 法官助理送达情况 -->
+            <if test="attribute4 == 5">
+                <if test="emsSignTime == null">
+                    and ems_sign_time is null
+                </if>
+                <if test="emsSignTime != null">
+                    and ems_sign_time is not null
+                </if>
+                <if test="caseNum != null">
+                    and case_num LIKE "%"#{caseNum,jdbcType=VARCHAR}"%"
+                </if>
+                <if test="deliverSignTime == null">
+                    and deliver_sign_time is null
+                </if>
+                <if test="deliverSignTime != null">
+                    and deliver_sign_time is not null
+                </if>
+            </if>
+
+            <!--<if test="deliverSignTime != null">-->
+            <!--and deliver_sign_time = #{deliverSignTime,jdbcType=TIMESTAMP}-->
+            <!--</if>-->
+
+
+            <if test="judgeAssistant != null">
+                and judge_assistant = #{judgeAssistant,jdbcType=VARCHAR}
+            </if>
+            <if test="judgeAssistantPhone != null">
+                and judge_assistant_phone = #{judgeAssistantPhone,jdbcType=VARCHAR}
+            </if>
+            <if test="communtitySignTime != null">
+                and communtity_sign_time = #{communtitySignTime,jdbcType=VARCHAR}
+            </if>
+            <if test="communtitySignId != null">
+                and communtity_sign_id = #{communtitySignId,jdbcType=VARCHAR}
+            </if>
+            <if test="communtityId != null">
+                and communtity_id = #{communtityId,jdbcType=VARCHAR}
+            </if>
+            <if test="turnsOut != null">
+                and turns_out = #{turnsOut,jdbcType=INTEGER}
+            </if>
+            <if test="turnsOutPeople != null">
+                and turns_out_people = #{turnsOutPeople,jdbcType=VARCHAR}
+            </if>
+
+
+            <if test="gridId != null">
+                and grid_id = #{gridId,jdbcType=VARCHAR}
+            </if>
+            <if test="caseStatus != null">
+                and case_status = #{caseStatus,jdbcType=INTEGER}
+            </if>
+            <if test="emsId != null">
+                and ems_id = #{emsId,jdbcType=VARCHAR}
+            </if>
+            <if test="emsPhone != null">
+                and ems_phone = #{emsPhone,jdbcType=VARCHAR}
+            </if>
+
+            <if test="courtId != null">
+                and court_id = #{courtId,jdbcType=VARCHAR}
+            </if>
+            <if test="courtSignTime != null">
+                and court_sign_time = #{courtSignTime,jdbcType=TIMESTAMP}
+            </if>
+            <!--<if test="remarks != null">-->
+            <!--and remarks = #{remarks,jdbcType=VARCHAR}-->
+            <!--</if>-->
+            <if test="createBy != null">
+                and create_by = #{createBy.id,jdbcType=VARCHAR}
+            </if>
+
+            <if test="createDate != null">
+                and create_date = #{createDate,jdbcType=TIMESTAMP}
+            </if>
+
+            <if test="updateBy != null">
+                and update_by = #{updateBy.id,jdbcType=VARCHAR}
+            </if>
+            <if test="updateDate != null">
+                and update_date = #{updateDate,jdbcType=TIMESTAMP}
+            </if>
+            <!-- <if test="delFlag != null">
+                 and del_flag = #{delFlag,jdbcType=VARCHAR}
+             </if>-->
+            <if test="attribute1 != null">
+                and attribute1 = #{attribute1,jdbcType=VARCHAR}
+            </if>
+            <if test="attribute2 != null">
+                and attribute2 = #{attribute2,jdbcType=VARCHAR}
+            </if>
+            <if test="attribute3 != null">
+                and attribute3 = #{attribute3,jdbcType=VARCHAR}
+            </if>
+            <!--<if test="attribute4 != null">-->
+            <!--attribute4 = #{attribute4,jdbcType=VARCHAR},-->
+            <!--</if>-->
+
+
+            <if test="page !=null and page.orderBy != null and page.orderBy != ''">
+                order by ${page.orderBy} DESC
+            </if>
+            <!--<if test="page.pageNo != null and page.pageNo &gt;=0">-->
+            <!--limit #{page.pageNo} , #{page.pageSize}-->
+            <!--</if>-->
+            <choose>
+                <when test="remarks!=null and gridId!=null">
+                    and SUBSTR(update_date,1,7) = #{remarks,jdbcType=VARCHAR}
+                </when>
+                <when test="remarks!=null and communtityId!=null">
+                    and SUBSTR(communtity_sign_time,1,7) = #{remarks,jdbcType=VARCHAR}
+                </when>
+
+
+            </choose>
+
+        </where>
+    </sql>
+
+    <select id="get" resultType="CaseInfo">
+        SELECT
+        <include refid="caseInfoColumns"/>
+        FROM case_info a
+        <include refid="caseInfoJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="CaseInfo">
+        SELECT
+        <include refid="caseInfoColumns"/>
+        FROM case_info a
+        <include refid="caseInfoJoins"/>
+        <where>
+
+            <if test="communtityId != null">
+                and communtity_id = #{communtityId,jdbcType=BIGINT}
+            </if>
+            <if test="gridId != null">
+                <if test="gridId == 0">
+                    and grid_id is null or grid_id = ''
+                </if>
+                <if test="gridId == 1">
+                    and grid_id is not null and grid_id != ''
+                </if>
+            </if>
+
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findAllList" resultType="CaseInfo">
+        SELECT
+        <include refid="caseInfoColumns"/>
+        FROM case_info a
+        <include refid="caseInfoJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="insert">
+		INSERT INTO case_info(
+			id,
+			ca_id,
+			case_num,
+			first_mail,
+			return_mail,
+			deliver,
+			deliver_address,
+			deliver_sign_time,
+			judge_assistant,
+			judge_assistant_phone,
+			communtity_sign_time,
+			communtity_sign_id,
+			communtity_id,
+			turns_out,
+			turns_out_people,
+			grid_sign_time,
+			grid_id,
+			case_status,
+			ems_id,
+			ems_phone,
+			ems_sign_time,
+			court_id,
+			court_sign_time,
+			remarks,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			attribute1,
+			attribute2,
+			attribute3,
+			attribute4
+		) VALUES (
+			#{id},
+			#{caId},
+			#{caseNum},
+			#{firstMail},
+			#{returnMail},
+			#{deliver},
+			#{deliverAddress},
+			#{deliverSignTime},
+			#{judgeAssistant},
+			#{judgeAssistantPhone},
+			#{communtitySignTime},
+			#{communtitySignId},
+			#{communtityId},
+			#{turnsOut},
+			#{turnsOutPeople},
+			#{gridSignTime},
+			#{gridId},
+			#{caseStatus},
+			#{emsId},
+			#{emsPhone},
+			#{emsSignTime},
+			#{courtId},
+			#{courtSignTime},
+			#{remarks},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag},
+			#{attribute1},
+			#{attribute2},
+			#{attribute3},
+			#{attribute4}
+		)
+	</insert>
+
+    <update id="update">
+		UPDATE case_info SET 	
+			ca_id = #{caId},
+			case_num = #{caseNum},
+			first_mail = #{firstMail},
+			return_mail = #{returnMail},
+			deliver = #{deliver},
+			deliver_address = #{deliverAddress},
+			deliver_sign_time = #{deliverSignTime},
+			judge_assistant = #{judgeAssistant},
+			judge_assistant_phone = #{judgeAssistantPhone},
+			communtity_sign_time = #{communtitySignTime},
+			communtity_sign_id = #{communtitySignId},
+			communtity_id = #{communtityId},
+			turns_out = #{turnsOut},
+			turns_out_people = #{turnsOutPeople},
+			grid_sign_time = #{gridSignTime},
+			grid_id = #{gridId},
+			case_status = #{caseStatus},
+			ems_id = #{emsId},
+			ems_phone = #{emsPhone},
+			ems_sign_time = #{emsSignTime},
+			court_id = #{courtId},
+			court_sign_time = #{courtSignTime},
+			remarks = #{remarks},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			attribute1 = #{attribute1},
+			attribute2 = #{attribute2},
+			attribute3 = #{attribute3},
+			attribute4 = #{attribute4}
+		WHERE id = #{id}
+	</update>
+
+    <update id="delete">
+		UPDATE case_info SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+
+    <update id="updateCaseInfoById">
+
+        update case_info
+        <set>
+            <if test="caId != null">
+                ca_id = #{caId,jdbcType=BIGINT},
+            </if>
+            <if test="caseNum != null">
+                case_num = #{caseNum,jdbcType=VARCHAR},
+            </if>
+            <if test="firstMail != null">
+                first_mail = #{firstMail,jdbcType=VARCHAR},
+            </if>
+            <if test="returnMail != null">
+                return_mail = #{returnMail,jdbcType=VARCHAR},
+            </if>
+            <if test="deliver != null">
+                deliver = #{deliver,jdbcType=VARCHAR},
+            </if>
+
+            <if test="deliverAddress != null">
+                deliver_address = #{deliverAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="deliverSignTime != null">
+                deliver_sign_time = #{deliverSignTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="judgeAssistant != null">
+                judge_assistant = #{judgeAssistant,jdbcType=VARCHAR},
+            </if>
+            <if test="judgeAssistantPhone != null">
+                judge_assistant_phone = #{judgeAssistantPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="communtitySignTime != null">
+                communtity_sign_time = #{communtitySignTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="communtitySignId != null">
+                communtity_sign_id = #{communtitySignId,jdbcType=VARCHAR},
+            </if>
+            <if test="communtityId != null">
+                communtity_id = #{communtityId,jdbcType=VARCHAR},
+            </if>
+            <if test="turnsOut != null">
+                turns_out = #{turnsOut,jdbcType=INTEGER},
+            </if>
+            <if test="turnsOutPeople != null">
+                turns_out_people = #{turnsOutPeople,jdbcType=VARCHAR},
+            </if>
+            <if test="gridSignTime != null">
+                grid_sign_time = #{gridSignTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gridId != null">
+                grid_id = #{gridId,jdbcType=VARCHAR},
+            </if>
+            <if test="caseStatus != null">
+                case_status = #{caseStatus,jdbcType=INTEGER},
+            </if>
+            <if test="emsId != null">
+                ems_id = #{emsId,jdbcType=VARCHAR},
+            </if>
+            <if test="emsPhone != null">
+                ems_phone = #{emsPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="emsSignTime != null">
+                ems_sign_time = #{emsSignTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="courtId != null">
+                court_id = #{courtId,jdbcType=VARCHAR},
+            </if>
+            <if test="courtSignTime != null">
+                court_sign_time = #{courtSignTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy.id,jdbcType=VARCHAR},
+            </if>
+
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+
+            <if test="updateBy != null">
+                update_by = #{updateBy.id,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <!--<if test="delFlag != null">-->
+            <!--del_flag = #{delFlag,jdbcType=VARCHAR},-->
+            <!--</if>-->
+            <if test="attribute1 != null">
+                attribute1 = #{attribute1,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute2 != null">
+                attribute2 = #{attribute2,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute3 != null">
+                attribute3 = #{attribute3,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute4 == 5">
+                <if test="attribute1 == null">
+                    attribute1 = null
+                </if>
+            </if>
+
+            <!--<if test="attribute4 != null">-->
+            <!--attribute4 = #{attribute4,jdbcType=VARCHAR},-->
+            <!--</if>-->
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+
+    </update>
+
+    <!--查询案件列表-->
+    <select id="selectCaseInfo" resultType="CaseInfo">
+        SELECT
+        <include refid="caseInfoColumns"/>
+        FROM case_info a
+        <include refid="_base_bo_cause"/>
+    </select>
+
+    <!--查询案件列表2-->
+    <select id="getCaseInfo" resultType="CaseInfo">
+        SELECT
+        <include refid="caseInfoColumns2"/>
+        FROM case_info a
+        <include refid="_base_bo_cause"/>
+    </select>
+
+<!--定时推送消息-->
+    <select id="timePushFroGird" resultType="CaseInfo">
+        SELECT
+            a.id AS "id",
+            a.ca_id AS "caId",
+            a.case_num AS "caseNum",
+            a.deliver_sign_time AS "deliverSignTime",
+            a.communtity_sign_time AS "communtitySignTime",
+            a.communtity_sign_id AS "communtitySignId",
+            a.communtity_id AS "communtityId",
+            a.grid_sign_time AS "gridSignTime",
+            a.grid_id AS "gridId",
+            a.case_status AS "caseStatus"
+            FROM
+                case_info a
+            WHERE
+              case_status != '4' and case_status != '5' and case_status != '6'and case_status != '7' and
+                DATEDIFF(grid_sign_time,(SELECT NOW())) > #{remarks,jdbcType=VARCHAR}
+    </select>
+    
+    <!--数据同步-->
+    <insert id="insertOrUpdate"  parameterType="CaseInfo">
+        insert into case_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="caId != null">
+                ca_id,
+            </if>
+            <if test="caseNum != null">
+                case_num,
+            </if>
+            <if test="firstMail != null">
+                first_mail,
+            </if>
+            <if test="returnMail != null">
+                return_mail,
+            </if>
+            <if test="deliver != null">
+                deliver,
+            </if>
+            <if test="deliverAddress != null">
+                deliver_address,
+            </if>
+            <if test="judgeAssistant != null">
+                judge_assistant,
+            </if>
+            <if test="judgeAssistantPhone != null">
+                judge_assistant_phone
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="caId != null">
+                #{caId,jdbcType=VARCHAR},
+            </if>
+            <if test="caseNum != null">
+                #{caseNum,jdbcType=VARCHAR},
+            </if>
+            <if test="firstMail != null">
+                #{firstMail,jdbcType=TIMESTAMP},
+            </if>
+            <if test="returnMail != null">
+                #{returnMail,jdbcType=VARCHAR},
+            </if>
+            <if test="deliver != null">
+                #{deliver,jdbcType=TINYINT},
+            </if>
+            <if test="deliverAddress != null">
+                #{deliverAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="judgeAssistant != null">
+                #{judgeAssistant,jdbcType=VARCHAR},
+            </if>
+            <if test="judgeAssistantPhone != null">
+                #{judgeAssistantPhone,jdbcType=VARCHAR}
+            </if>
+        </trim>
+        ON DUPLICATE KEY UPDATE
+        <if test="caseStatus != null">
+            case_status = #{caseStatus,jdbcType=TINYINT}，
+        </if>
+        <if test="caId != null">
+            ca_id = #{caId,jdbcType=TINYINT}
+        </if>
+    </insert>
+
+
+    <select id="pageTest" resultType="CaseInfo">
+        SELECT
+        <include refid="caseInfoColumns"/>
+        FROM case_info a
+        <include refid="_base_bo_cause"/>
+    </select>
+
+
+</mapper>

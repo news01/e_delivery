@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.archivesuser.dao.ArchivesUserDao">
+    
+	<sql id="archivesUserColumns">
+		a.id AS "id",
+		a.user_name AS "userName",
+		a.sex AS "sex",
+		a.in_data_date AS "inDataDate",
+		a.office AS "office",
+		a.open_id AS "openId",
+		a.phone_num AS "phoneNum",
+		a.name AS "name",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_time AS "updateTime",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="archivesUserJoins">
+	</sql>
+    
+	<select id="get" resultType="ArchivesUser">
+		SELECT 
+			<include refid="archivesUserColumns"/>
+		FROM archives_user a
+		<include refid="archivesUserJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findOffice" resultType="java.lang.String">
+		SELECT office FROM archives_user WHERE open_id !='0'
+	</select>
+	<select id="findByFy" resultType="java.lang.String">
+		SELECT office FROM archives_user WHERE office LIKE CONCAT (#{office},'%') AND open_id !='0'
+	</select>
+	<select id="findByFullOffice" resultType="ArchivesUser">
+		SELECT * FROM archives_user WHERE office = #{office1} OR office = #{office2} AND open_id !='0'
+	</select>
+	<select id="findByOpenId" resultType="ArchivesUser" parameterType="ArchivesUser" >
+		SELECT * FROM archives_user WHERE open_id = #{openId}
+	</select>
+	<select id="findByUserName" resultType="ArchivesUser" parameterType="ArchivesUser" >
+		SELECT * FROM archives_user WHERE user_name = #{userName} AND open_id = '0'
+	</select>
+	
+	<update id="updateOpenId">
+		UPDATE archives_user SET 	
+			
+			open_id = #{openId}
+			
+		WHERE user_name = #{userName}
+	</update>
+	
+	
+	
+	<select id="findList" resultType="ArchivesUser">
+		SELECT 
+			<include refid="archivesUserColumns"/>
+		FROM archives_user a
+		<include refid="archivesUserJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ArchivesUser">
+		SELECT 
+			<include refid="archivesUserColumns"/>
+		FROM archives_user a
+		<include refid="archivesUserJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO archives_user(
+			id,
+			user_name,
+			sex,
+			in_data_date,
+			office,
+			open_id,
+			phone_num,
+			name,
+			create_by,
+			create_date,
+			update_by,
+			update_time,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{userName},
+			#{sex},
+			#{inDataDate},
+			#{office},
+			#{openId},
+			#{phoneNum},
+			#{name},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateTime},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE archives_user SET 	
+			user_name = #{userName},
+			sex = #{sex},
+			in_data_date = #{inDataDate},
+			office = #{office},
+			open_id = #{openId},
+			phone_num = #{phoneNum},
+			name = #{name},
+			update_by = #{updateBy.id},
+			update_time = #{updateTime},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE archives_user SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

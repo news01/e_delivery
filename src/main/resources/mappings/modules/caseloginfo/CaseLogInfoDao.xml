@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.caseloginfo.dao.CaseLogInfoDao">
+
+    <sql id="caseLogInfoColumns">
+		a.log_id AS "logId",
+		a.case_id AS "caseId",
+		a.email_id AS "emailId",
+		a.log_time AS "logTime",
+		a.log_info AS "logInfo",
+		a.log_status AS "logStatus",
+		a.deliver AS "deliver",
+		a.sign_men AS "signMen",
+		a.attribute1 AS "attribute1",
+		a.attribute2 AS "attribute2",
+		a.attribute3 AS "attribute3",
+		a.attribute4 AS "attribute4",
+		a.attribute5 AS "attribute5",
+		a.attribute6 AS "attribute6"
+	</sql>
+
+    <sql id="_base_caseLogInfo_sql">
+
+        <if test="logId != null">
+            and log_id = #{logId,jdbcType=INTEGER}
+        </if>
+        <if test="caseId != null">
+            and case_id = #{caseId,jdbcType=VARCHAR}
+        </if>
+        <if test="emailId != null">
+            and email_id = #{emailId,jdbcType=VARCHAR}
+        </if>
+        <if test="logTime != null">
+            and log_time = #{logTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="logInfo != null">
+            and log_info = #{logInfo,jdbcType=VARCHAR}
+        </if>
+        <if test="logStatus != null">
+            and log_status = #{logStatus,jdbcType=TINYINT}
+        </if>
+        <if test="deliver != null">
+            and deliver = #{deliver,jdbcType=VARCHAR}
+        </if>
+        <if test="signMen != null">
+            and sign_men = #{signMen,jdbcType=VARCHAR}
+        </if>
+        <if test="attribute1 != null">
+            and attribute1 = #{attribute1,jdbcType=VARCHAR}
+        </if>
+        <if test="attribute2 != null">
+            and attribute2 = #{attribute2,jdbcType=VARCHAR}
+        </if>
+        <if test="attribute3 != null">
+            and attribute3 = #{attribute3,jdbcType=VARCHAR}
+        </if>
+        <if test="attribute4 != null">
+            and attribute4 = #{attribute4,jdbcType=VARCHAR}
+        </if>
+        <if test="attribute5 != null">
+            and attribute5 = #{attribute5,jdbcType=VARCHAR}
+        </if>
+        <if test="attribute6 != null">
+            and attribute6 = #{attribute6,jdbcType=VARCHAR}
+        </if>
+
+    </sql>
+
+    <sql id="caseLogInfoJoins">
+    </sql>
+
+    <select id="get" resultType="CaseLogInfo">
+        SELECT
+        <include refid="caseLogInfoColumns"/>
+        FROM case_log_info a
+        <include refid="caseLogInfoJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="CaseLogInfo">
+        SELECT
+        <include refid="caseLogInfoColumns"/>
+        FROM case_log_info a
+        <include refid="caseLogInfoJoins"/>
+        <where>
+
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findAllList" resultType="CaseLogInfo">
+        SELECT
+        <include refid="caseLogInfoColumns"/>
+        FROM case_log_info a
+        <include refid="caseLogInfoJoins"/>
+        <where>
+
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="insert">
+		INSERT INTO case_log_info(
+			log_id,
+			case_id,
+			email_id,
+			log_time,
+			log_info,
+			log_status,
+			deliver,
+			sign_men,
+			attribute1,
+			attribute2,
+			attribute3,
+			attribute4,
+			attribute5,
+			attribute6
+		) VALUES (
+			#{logId},
+			#{caseId},
+			#{emailId},
+			#{logTime},
+			#{logInfo},
+			#{logStatus},
+			#{deliver},
+			#{signMen},
+			#{attribute1},
+			#{attribute2},
+			#{attribute3},
+			#{attribute4},
+			#{attribute5},
+			#{attribute6}
+		)
+	</insert>
+
+    <update id="update">
+		UPDATE case_log_info SET 	
+			log_id = #{logId},
+			case_id = #{caseId},
+			email_id = #{emailId},
+			log_time = #{logTime},
+			log_info = #{logInfo},
+			log_status = #{logStatus},
+			deliver = #{deliver},
+			sign_men = #{signMen},
+			attribute1 = #{attribute1},
+			attribute2 = #{attribute2},
+			attribute3 = #{attribute3},
+			attribute4 = #{attribute4},
+			attribute5 = #{attribute5},
+			attribute6 = #{attribute6}
+		WHERE id = #{id}
+	</update>
+
+    <update id="delete">
+		DELETE FROM case_log_info
+		WHERE id = #{id}
+	</update>
+
+
+    <!--添加案件物流信息-->
+    <insert id="insertCaseDelInfo" parameterType="CaseLogInfo">
+        insert into case_log_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="logId != null">
+                log_id,
+            </if>
+            <if test="caseId != null">
+                case_id,
+            </if>
+            <if test="emailId != null">
+                email_id,
+            </if>
+            <if test="logTime != null">
+                log_time,
+            </if>
+            <if test="logInfo != null">
+                log_info,
+            </if>
+            <if test="logStatus != null">
+                log_status,
+            </if>
+            <if test="deliver != null">
+                deliver,
+            </if>
+            <if test="signMen != null">
+                sign_men,
+            </if>
+
+            <if test="attribute1 != null">
+                attribute1,
+            </if>
+            <if test="attribute2 != null">
+                attribute2,
+            </if>
+            <if test="attribute3 != null">
+                attribute3,
+            </if>
+            <if test="attribute4 != null">
+                attribute4,
+            </if>
+
+            <if test="attribute5 != null">
+                attribute5,
+            </if>
+            <if test="attribute6 != null">
+                attribute6
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+
+            <if test="logId != null">
+                #{logId,jdbcType=INTEGER},
+            </if>
+            <if test="caseId != null">
+                #{caseId,jdbcType=VARCHAR},
+            </if>
+            <if test="emailId != null">
+                #{emailId,jdbcType=VARCHAR},
+            </if>
+            <if test="logTime != null">
+                #{logTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="logInfo != null">
+                #{logInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="logStatus != null">
+                #{logStatus,jdbcType=TINYINT},
+            </if>
+            <if test="deliver != null">
+                #{deliver,jdbcType=VARCHAR},
+            </if>
+            <if test="signMen != null">
+                #{signMen,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute1 != null">
+                #{attribute1,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute2 != null">
+                #{attribute2,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute3 != null">
+                #{attribute3,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute4 != null">
+                #{attribute4,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute5 != null">
+                #{attribute5,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute6 != null">
+                #{attribute6,jdbcType=VARCHAR}
+            </if>
+
+        </trim>
+    </insert>
+
+    <!--获取案件物流信息-->
+    <select id="getCaseLogInfo" resultType="CaseLogInfo">
+        select
+        <include refid="caseLogInfoColumns"/>
+        from case_log_info a
+        where 1=1
+        <include refid="_base_caseLogInfo_sql"/>
+        order by a.log_time
+        ASC
+
+    </select>
+
+</mapper>

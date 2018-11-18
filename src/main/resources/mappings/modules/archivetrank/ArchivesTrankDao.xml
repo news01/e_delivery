@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.archivetrank.dao.ArchivesTrankDao">
+    
+	<sql id="archivesTrankColumns">
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.file_id AS "fileId",
+		a.sign_time AS "signTime",
+		a.turn_time AS "turnTime",
+		a.all_pages AS "allPages",
+		
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_time AS "updateTime",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		u2.name AS "user.name"
+	</sql>
+	
+	<sql id="archivesTrankJoins">
+		LEFT JOIN sys_user u2 ON u2.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="ArchivesTrank">
+		SELECT 
+			<include refid="archivesTrankColumns"/>
+		FROM archives_trank a
+		<include refid="archivesTrankJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ArchivesTrank">
+		SELECT 
+			<include refid="archivesTrankColumns"/>
+		FROM archives_trank a
+		<include refid="archivesTrankJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ArchivesTrank">
+		SELECT 
+			<include refid="archivesTrankColumns"/>
+		FROM archives_trank a
+		<include refid="archivesTrankJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO archives_trank(
+			id,
+			user_id,
+			file_id,
+			sign_time,
+			turn_time,
+			all_pages,
+			create_by,
+			create_date,
+			update_by,
+			update_time,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{user.id},
+			#{fileId},
+			#{signTime},
+			#{turnTime},
+			#{allPages},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateTime},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE archives_trank SET 	
+			user_id = #{user.id},
+			file_id = #{fileId},
+			sign_time = #{signTime},
+			turn_time = #{turnTime},
+			all_pages = #{allPages},
+			update_by = #{updateBy.id},
+			update_time = #{updateTime},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE archives_trank SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- mine -->
+	
+	<sql id="circulBase">
+    	c.id AS "id",
+		c.user_id AS "userId",
+		c.file_id AS "fileId",
+		c.sign_time AS "signTime",
+		c.turn_time AS "turnTime",
+		c.all_pages AS "allPages",
+		f.case_num AS "caseNum",
+		f.case_case AS "caseCase",
+		f.pla AS "pla",
+		f.defen AS "defen",
+		f.book_num AS "bookNum",
+		f.all_books AS "allBooks",
+		f.page_num AS "pageNum",
+		u.user_name AS "userName",
+		u.sex AS "sex",
+		u.in_data_date AS "inDataDate",
+		u.office AS "office",
+		u.open_id AS "openId",
+		u.phone_num AS "phoneNum",
+		u.name AS "name"
+    </sql>
+    <sql id="baseJoin">
+    	LEFT JOIN archives f ON f.id = c.file_id
+    	LEFT JOIN archives_user u ON u.id = c.user_id
+    </sql>
+	
+	<select id="findMyFile" resultType="ArchivesTrank">
+    	SELECT
+    		<include refid="archivesTrankColumns"/>
+    	FROM archives_trank a
+    	<include refid="archivesTrankJoins"/>
+    	WHERE a.user_id = #{id} 
+    	AND a.sign_time &gt;=#{upTime}
+    	AND a.sign_time &lt;=#{lowTime}	
+    	ORDER BY a.sign_time DESC
+    	LIMIT #{start},#{end}
+    </select>
+    
+	<select id="findMyTurn" resultType="ArchivesTrank">
+    	SELECT
+    		<include refid="archivesTrankColumns"/>
+    	FROM archives_trank a
+    	<include refid="archivesTrankJoins"/>
+    	WHERE a.user_id = #{id} 
+    	AND a.turn_time &gt;=#{upTime}
+    	AND a.turn_time &lt;=#{lowTime}	
+    	ORDER BY a.sign_time DESC
+    	LIMIT #{start},#{end}
+    </select>
+	<select id="findMyTurn2" resultType="ArchivesTrank">
+    	SELECT
+    		<include refid="archivesTrankColumns"/>
+    	FROM archives_trank a
+    	<include refid="archivesTrankJoins"/>
+    	WHERE a.user_id = #{id} 
+    	AND a.turn_time &gt;=#{upTime}
+    	AND a.turn_time &lt;=#{lowTime}	
+    	ORDER BY a.sign_time DESC
+    </select>
+    
+    <select id="findTurnTo" resultType="ArchivesTrank">
+    	SELECT
+    		<include refid="archivesTrankColumns"/>
+    	FROM archives_trank a
+    	<include refid="archivesTrankJoins"/>
+    	WHERE a.file_id = #{fileId}
+    	AND a.sign_time = #{signTime}
+    </select>
+	<select id="findLastCircul" resultType="ArchivesTrank">
+		SELECT
+		<include refid="archivesTrankColumns"/>
+		
+		FROM archives_trank a
+		<include refid="archivesTrankJoins"/>
+		WHERE a.file_id = #{file_id} AND a.turn_time = '0'
+	</select>
+	
+	
+	
+	<update id="updateTurnTime">
+		UPDATE archives_trank SET turn_time = #{turnTime} WHERE id = #{id}
+	</update>
+	
+	<select id="findByFileId" resultType="ArchivesTrank">
+    	SELECT 
+    		<include refid="archivesTrankColumns"/>
+    	FROM archives_trank a
+    	<include refid="archivesTrankJoins"/>
+    	WHERE a.file_id = #{id}
+    	ORDER BY a.sign_time DESC
+    	LIMIT #{start},#{end}
+    </select>
+	<select id="findNowHave" resultType="ArchivesTrank">
+    	SELECT 
+    		<include refid="archivesTrankColumns"/>
+    	FROM archives_trank a
+    	<include refid="archivesTrankJoins"/>
+    	WHERE a.user_id = #{id}
+    	AND a.turn_time = '0'
+    	ORDER BY a.sign_time DESC
+    	LIMIT #{start},#{end}
+    </select>
+    <select id="findAllNowHave" resultType="ArchivesTrank">
+    	SELECT 
+    		<include refid="archivesTrankColumns"/>
+    	FROM archives_trank a
+    	<include refid="archivesTrankJoins"/>
+    	WHERE a.user_id = #{id}
+    	AND a.turn_time = '0'
+    	ORDER BY a.sign_time DESC
+    	
+    </select>
+    <select id="findCount" resultType="String">
+    	SELECT 
+    	<include refid="archivesTrankColumns"/>
+    	FROM archives_trank a
+    	<include refid="archivesTrankJoins"/>
+    </select>
+     <select id="findAllHave" resultType="ArchivesTrank">
+    	SELECT 
+    	<include refid="archivesTrankColumns"/>
+    	FROM archives_trank a
+    	<include refid="archivesTrankJoins"/>
+    	WHERE a.user_id = #{id}
+    </select>
+    <delete id="deleteByFileId">
+    	DELETE FROM archives_trank WHERE file_id = #{file_id}
+    </delete>
+</mapper>

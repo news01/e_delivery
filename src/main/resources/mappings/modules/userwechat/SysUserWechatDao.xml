@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.userwechat.dao.SysUserWechatDao">
+    
+	<sql id="sysUserWechatColumns">
+		a.user_id AS "user.id",
+		a.open_id AS "openId",
+		u1.name AS "user.name"
+		
+	</sql>
+	
+	<sql id="sysUserWechatJoins">
+		LEFT JOIN sys_user u1 ON u1.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="SysUserWechat">
+		SELECT 
+			<include refid="sysUserWechatColumns"/>
+		FROM sys_user_wechat a
+		<include refid="sysUserWechatJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="SysUserWechat">
+		SELECT 
+			<include refid="sysUserWechatColumns"/>
+		FROM sys_user_wechat a
+		<include refid="sysUserWechatJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SysUserWechat">
+		SELECT 
+			<include refid="sysUserWechatColumns"/>
+		FROM sys_user_wechat a
+		<include refid="sysUserWechatJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insertSysUser" parameterType="SysUserWechat">
+		INSERT INTO sys_user_wechat(
+			user_id,
+			open_id
+		) VALUES (
+			#{user.id},
+			#{openId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_user_wechat SET 	
+			user_id = #{user.id},
+			open_id = #{openId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM sys_user_wechat
+		WHERE id = #{id}
+	</update>
+	
+	
+	<select id="findOpenId" resultType="SysUserWechat">
+		SELECT 
+			<include refid="sysUserWechatColumns"/>
+		FROM sys_user_wechat a
+		<include refid="sysUserWechatJoins"/>
+		WHERE open_id = #{open_id}
+	</select>
+	<select id="findByName" resultType="SysUserWechat">
+		SELECT 
+			<include refid="sysUserWechatColumns"/>
+		FROM sys_user_wechat a
+		<include refid="sysUserWechatJoins"/>
+		WHERE name = #{name}
+	</select>
+	<delete id="deletByOpenId">
+		DELETE FROM sys_user_wechat
+		WHERE open_id = #{open_id}
+	</delete>
+</mapper>
